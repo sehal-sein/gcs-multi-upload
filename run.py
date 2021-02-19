@@ -7,8 +7,8 @@ import json
 OUTPUT_DATA = {}
 
 INPUT_DIR = "upload/"
-GOOGLE_STORAGE_BUCKET = ""
-PUBLIC = True
+GOOGLE_STORAGE_BUCKET = os.environ.get('GOOGLE_STORAGE_BUCKET', 'micasaportal')
+PUBLIC = False
 
 
 def upload_file(file_data, path="/"):
@@ -104,12 +104,13 @@ def set_nested_dict(key, url, result_dict={}):
     elif len(file_paths) > 1:
         if current_key in result_dict:
             return {
+                **result_dict,
                 current_key: set_nested_dict(
                     file_paths[1], url, result_dict[current_key]
-                )
+                ),
             }
         else:
-            return {current_key: set_nested_dict(file_paths[1], url)}
+            return {**result_dict, current_key: set_nested_dict(file_paths[1], url)}
 
     return {"file_name": current_key, "public": "PUBLIC", "url": url}
 
